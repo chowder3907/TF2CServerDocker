@@ -28,13 +28,12 @@ ENV SteamAppId=3557020
 ENV SteamGameId=3557020
 WORKDIR ${HOMEDIR}
 USER ${USER}
-CMD set +x \
-    mkdir -p ~/tf && \
+CMD mkdir -p ~/tf && \
     mkdir -p ~/classified && \
     /usr/games/steamcmd +force_install_dir ~/tf +login anonymous +app_update 232250 validate +quit && \
     /usr/games/steamcmd +force_install_dir ~/classified +login anonymous +app_update 3557020 validate +quit && \
     mkdir -p ~/.steam/sdk64 && \
-    ln -sfn ~/classified/linux64/steamclient.so ~/.steam/sdk64/steamclient.so && \
+    ln -sfn ~/classified/linux64/steamclient.so ~/.steam/sdk64 && \
     cd ~/classified && \
-    ~/classified/srcds.sh -debug -port 27015 -insecure -sv_lan 1 -ip 0.0.0.0 -tf_path ~/tf +map ctf_2fort
+    ~/classified/srcds.sh -debug -port 27015 -tf_path ~/tf +map ctf_2fort
 
