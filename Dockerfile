@@ -1,0 +1,41 @@
+
+FROM ubuntu:latest
+ENV USER=steam
+ENV HOMEDIR=/home/steam
+
+#initial dependency and user setup
+RUN set -x \
+    apt-add-repository multiverse && \
+    dpkg --add-architecture i386 && \
+    apt update && \
+    echo steam steam/license note '' | debconf-set-selections && \
+    echo steam steam/question select "I AGREE" | debconf-set-selections && \
+    apt install -y --no-install-recommends --no-install-suggests \
+        steamcmd \
+        p7zip \
+        aria2 \
+        tilde \
+        lib32z1 \
+        libbz2-1.0:i386 \
+        lib32gcc-s1 \
+        lib32stdc++6 \
+        libcurl3-gnutls:i386 \
+        libsdl2-2.0-0:i386 \
+        ca-certificates \
+        wget \
+    && useradd -ms /bin/bash ${USER}
+WORKDIR ${HOMEDIR}
+USER ${USER}
+CMD mkdir -p ~/tf && \
+    mkdir -p ~/classified && \
+    /usr/games/steamcmd +force_install_dir ~/tf +login anonymous +app_update 232250 validate +quit && \
+    /usr/games/steamcmd +force_install_dir ~/classified +login anonymous +app_update 3557020 validate +quit && \
+    `#mkdir -p ~/.steam/sdk64 && \ #disabling these two lines as a test, running next 2 lines instead` \
+    `#ln -sfn ~/classified/linux64/steamclient.so ~/.steam/sdk64 &&` \
+    mkdir -p ~/.steam/sdk64 && \
+    cp ~/.steam/steam/steamcmd/linux64/steamclient.so ~/.steam/sdk64/steamclient.so && \
+    export SteamAppId=3557020 && \
+    export SteamGameId=3557020 && \
+    cd ~/classified && \
+    ~/classified/srcds.sh -port 27015 -tf_path ~/tf +map ctf_2fort
+

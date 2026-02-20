@@ -1,0 +1,5 @@
+services:
+  tf2c-server:
+    build:
+      .
+    network_mode: "host"
