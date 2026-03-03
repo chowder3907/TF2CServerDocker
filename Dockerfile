@@ -1,40 +1,35 @@
+FROM lacledeslan/steamcmd:linux AS TF2C-builder
 
-FROM ubuntu:latest
-ENV USER=steam
-ENV HOMEDIR=/home/steam
+RUN mkdir --parents /output/TF2; /app/steamcmd.sh +force_install_dir /output/TF2 +login anonymous +app_update 232250 validate +quit
 
-#initial dependency and user setup
-RUN set -x \
-    apt-add-repository multiverse && \
-    dpkg --add-architecture i386 && \
-    apt update && \
-    echo steam steam/license note '' | debconf-set-selections && \
-    echo steam steam/question select "I AGREE" | debconf-set-selections && \
-    apt install -y --no-install-recommends --no-install-suggests \
-        steamcmd \
-        p7zip \
-        aria2 \
-        tilde \
-        lib32z1 \
-        libbz2-1.0:i386 \
-        lib32gcc-s1 \
-        lib32stdc++6 \
-        libcurl3-gnutls:i386 \
-        libsdl2-2.0-0:i386 \
-        ca-certificates \
-        wget \
-    && useradd -ms /bin/bash ${USER}
-ENV SteamAppId=3557020
-ENV SteamGameId=3557020
-WORKDIR ${HOMEDIR}
-USER ${USER}
-CMD set +x \
-    mkdir -p ~/tf && \
-    mkdir -p ~/classified && \
-    /usr/games/steamcmd +force_install_dir ~/tf +login anonymous +app_update 232250 validate +quit && \
-    /usr/games/steamcmd +force_install_dir ~/classified +login anonymous +app_update 3557020 validate +quit && \
-    mkdir -p ~/.steam/sdk64 && \
-    ln -sfn ~/classified/linux64/steamclient.so ~/.steam/sdk64/steamclient.so && \
-    cd ~/classified && \
-    ~/classified/srcds.sh -debug -port 27015 -insecure -sv_lan 1 -ip 0.0.0.0 -tf_path ~/tf +map ctf_2fort
+RUN mkdir --parents /output/classified; /app/steamcmd.sh +force_install_dir /output/classified +login anonymous +app_update 3557020 validate +quit
 
+# Grab x64 version of steamclient.so
+RUN mkdir --parents /output/TF2/.steam/sdk64/ /app/ll-tests && \
+    cp /app/linux64/steamclient.so /output/TF2/.steam/sdk64/steamclient.so
+
+FROM debian:trixie-slim
+
+ARG BUILDNODE=unspecified
+ARG SOURCE_COMMIT=unspecified
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends --no-install-suggests -y \
+        ca-certificates locales locales-all tmux && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* && \
+    echo "LC_ALL=en_US.UTF-8" >> /etc/environment && \
+    useradd --home /app --gid root --system TF2C && \
+    mkdir --parents /app && \
+    chown TF2C:root -R /app
+
+COPY --chown=TF2C:root --from=TF2C-builder /output/classified /app/classified
+COPY --chown=TF2C:root --from=TF2C-builder /output/TF2 /app/TF2
+
+USER TF2C
+
+WORKDIR /app
+
+CMD ["/bin/bash"]
+
+ONBUILD USER root
