@@ -1,12 +1,12 @@
-FROM lacledeslan/steamcmd:linux AS TF2C-builder
+FROM lacledeslan/steamcmd:linux AS tf2c-builder
 
-RUN mkdir --parents /output/TF2; /app/steamcmd.sh +force_install_dir /output/TF2 +login anonymous +app_update 232250 validate +quit
+RUN mkdir --parents /output/TF2 && chmod 777 /output/TF2 && /app/steamcmd.sh +force_install_dir /output/TF2/ +login anonymous +app_update 232250 validate +quit
 
-RUN mkdir --parents /output/classified; /app/steamcmd.sh +force_install_dir /output/classified +login anonymous +app_update 3557020 validate +quit
+RUN mkdir --parents /output/classified && chmod 777 /output/classified && /app/steamcmd.sh +force_install_dir /output/classified/ +login anonymous +app_update 3557020 validate +quit
 
 # Grab x64 version of steamclient.so
-RUN mkdir --parents /output/TF2/.steam/sdk64/ /app/ll-tests && \
-    cp /app/linux64/steamclient.so /output/TF2/.steam/sdk64/steamclient.so
+RUN mkdir --parents /output/.steam/sdk64/ /app/ll-tests && \
+    cp /app/linux64/steamclient.so /output/.steam/sdk64/steamclient.so
 
 FROM debian:trixie-slim
 
@@ -23,8 +23,7 @@ RUN apt-get update && \
     mkdir --parents /app && \
     chown TF2C:root -R /app
 
-COPY --chown=TF2C:root --from=TF2C-builder /output/classified /app/classified
-COPY --chown=TF2C:root --from=TF2C-builder /output/TF2 /app/TF2
+COPY --chown=TF2C:root --from=tf2c-builder /output /app
 
 USER TF2C
 
