@@ -1,0 +1,4 @@
+change it so that it polls the steam depot build to update in the runtf2c.sh file for both tf2 AND tf2c (curl -s https://api.steamcmd.net/v1/info/232250 | jq '.data["232250"].depots.branches.public.buildid')
+
+add environment variables for running the server through compose
+add volumes for custom maps and potentially sourcemod
