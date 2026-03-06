@@ -3,4 +3,4 @@ services:
         build: .
         network_mode: "host"
         working_dir: /app/classified
-        #entrypoint: /app/classified/srcds.sh -tf_path /app/TF2 +map ctf_2fort +randommap +sv_lan 1
+        entrypoint: /app/classified/srcds.sh -tf_path /app/TF2 +map ctf_2fort +randommap +sv_lan 1

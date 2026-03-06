@@ -1,5 +1,5 @@
 FROM lacledeslan/steamcmd:linux AS tf2c-builder
-#continue building
+
 RUN mkdir --parents /output/TF2 && chmod 777 /output/TF2 && /app/steamcmd.sh +force_install_dir /output/TF2/ +login anonymous +app_update 232250 validate +quit
 
 RUN mkdir --parents /output/classified && chmod 777 /output/classified && /app/steamcmd.sh +force_install_dir /output/classified/ +login anonymous +app_update 3557020 validate +quit
@@ -29,6 +29,6 @@ USER TF2C
 
 WORKDIR /app
 
-CMD /app/classified/srcds.sh -tf_path /app/TF2 +map ctf_2fort +randommap +sv_lan 1
+ENTRYPOINT /app/classified/srcds.sh -tf_path /app/TF2 +map ctf_2fort +randommap +sv_lan 1
 
 ONBUILD USER root
