@@ -29,6 +29,22 @@ USER TF2C
 
 WORKDIR /app
 
-ENTRYPOINT /app/classified/srcds.sh -tf_path /app/TF2 +map ctf_2fort +randommap +sv_lan 1
+ENV PORT=27015 \
+MAXPLAYERS=24 \
+STARTMAP="ctf_2fort" \
+REGION=0 \
+CFG_FILE="server.cfg" \
+MAPCYCLE_FILE="mapcycle.txt" \
+REPLAY=0 \
+SRCDS_TOKEN=0 \
+EXTRA_ARGS=""
 
+
+ENTRYPOINT /bin/bash -c '/app/classified/srcds.sh -tf_path /app/TF2 \
++map "${STARTMAP}" \
++maxplayers "${MAXPLAYERS}" \
++sv_region "${REGION}" \
++sv_setsteamaccount "${SRCDS_TOKEN}" \
+-port "${PORT}" \
+"${EXTRA_ARGS}" '
 ONBUILD USER root
