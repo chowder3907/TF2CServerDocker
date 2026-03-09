@@ -1,3 +1,3 @@
-add environment variables for running the server through compose
 add volumes for custom maps and potentially sourcemod
-change readme to have dependencies (bash, curl, jq, docker, docker-compose)
+change the run file to autobuild
+make readme

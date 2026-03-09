@@ -2,7 +2,8 @@ FROM lacledeslan/steamcmd:linux AS tf2c-builder
 
 RUN mkdir --parents /output/TF2 && chmod 777 /output/TF2 && /app/steamcmd.sh +force_install_dir /output/TF2/ +login anonymous +app_update 232250 validate +quit
 
-RUN mkdir --parents /output/classified && chmod 777 /output/classified && /app/steamcmd.sh +force_install_dir /output/classified/ +login anonymous +app_update 3557020 validate +quit
+RUN mkdir --parents /output/classified && chmod 777 /output/classified && /app/steamcmd.sh +force_install_dir /output/classified/ +login anonymous +app_update 3557020 validate +quit && \
+echo "3557020" > /output/classified/steam_appid.txt
 
 # Grab x64 version of steamclient.so
 RUN mkdir --parents /output/.steam/sdk64/ /app/ll-tests && \
@@ -27,7 +28,7 @@ COPY --chown=TF2C:root --from=tf2c-builder /output /app
 
 USER TF2C
 
-WORKDIR /app
+WORKDIR /app/classified
 
 ENV PORT=27015 \
 MAXPLAYERS=24 \
@@ -40,11 +41,14 @@ SRCDS_TOKEN=0 \
 EXTRA_ARGS=""
 
 
-ENTRYPOINT /bin/bash -c '/app/classified/srcds.sh -tf_path /app/TF2 \
-+map "${STARTMAP}" \
-+maxplayers "${MAXPLAYERS}" \
-+sv_region "${REGION}" \
-+sv_setsteamaccount "${SRCDS_TOKEN}" \
--port "${PORT}" \
-"${EXTRA_ARGS}" '
+#ENTRYPOINT /bin/bash -c '/app/classified/srcds.sh -tf_path /app/TF2 \
+#+map "${STARTMAP}" \
+#+maxplayers "${MAXPLAYERS}" \
+#+sv_region "${REGION}" \
+#+sv_setsteamaccount "${SRCDS_TOKEN}" \
+#-port "${PORT}" \
+#"${EXTRA_ARGS}" '
+# Dockerfile
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["/app/classified/srcds.sh -tf_path /app/TF2 +map $STARTMAP +maxplayers $MAXPLAYERS +sv_region $REGION +sv_setsteamaccount $SRCDS_TOKEN -port $PORT +exec $CFG_FILE +maycyclefile $MAPCYCLE_FILE"]
 ONBUILD USER root
