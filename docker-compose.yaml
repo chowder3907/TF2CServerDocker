@@ -3,9 +3,8 @@ services:
         build: .
         network_mode: "host"
         working_dir: /app/classified
-        volumes:
-            - ./maps:/app/classified/tf2classified/maps
-            - ./cfg:/app/classified/tf2classified/cfg
-        #entrypoint: /app/classified/srcds.sh -tf_path /app/TF2 +randommap +sv_lan 1
+        #volumes:
+            #- ./maps:/app/classified/tf2classified/maps
+            #- ./cfg:/app/classified/tf2classified/cfg
         #environment:
             #- MAXPLAYERS=32
