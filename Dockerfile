@@ -34,22 +34,13 @@ ENV PORT=27015 \
 MAXPLAYERS=24 \
 STARTMAP="ctf_2fort" \
 REGION=0 \
-CFG_FILE="server.cfg" \
-MAPCYCLE_FILE="mapcycle.txt" \
+CFG_FILE="/app/classified/tf2classified/cfg/config_default.cfg" \
+MAPCYCLE_FILE="/app/classified/tf2classified/cfg/mapcycle_default.txt" \
 REPLAY=0 \
 SRCDS_TOKEN=0 \
 EXTRA_ARGS=""
 
-
-#ENTRYPOINT /bin/bash -c '/app/classified/srcds.sh -tf_path /app/TF2 \
-#+map "${STARTMAP}" \
-#+maxplayers "${MAXPLAYERS}" \
-#+sv_region "${REGION}" \
-#+sv_setsteamaccount "${SRCDS_TOKEN}" \
-#-port "${PORT}" \
-#"${EXTRA_ARGS}" '
-# Dockerfile
 ENTRYPOINT ["/bin/bash", "-c"]
 CMD ["/app/classified/srcds.sh -tf_path /app/TF2 +map $STARTMAP +maxplayers $MAXPLAYERS +sv_region $REGION +sv_setsteamaccount $SRCDS_TOKEN -port $PORT +exec $CFG_FILE +maycyclefile $MAPCYCLE_FILE"]
-CMD ["/app/classified/srcds.sh -tf_path /app/TF2 +map $STARTMAP +maxplayers $MAXPLAYERS +sv_region $REGION +sv_setsteamaccount $SRCDS_TOKEN -port $PORT +exec $CFG_FILE +exec maycyclefile $MAPCYCLE_FILE"]
+CMD ["/app/classified/srcds.sh -tf_path /app/TF2 +map $STARTMAP +maxplayers $MAXPLAYERS +sv_region $REGION +sv_setsteamaccount $SRCDS_TOKEN -port $PORT +exec $CFG_FILE +mapcyclefile $MAPCYCLE_FILE"]
 ONBUILD USER root
