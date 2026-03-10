@@ -50,9 +50,6 @@ EXTRA_ARGS=""
 #"${EXTRA_ARGS}" '
 # Dockerfile
 ENTRYPOINT ["/bin/bash", "-c"]
-<<<<<<< HEAD
 CMD ["/app/classified/srcds.sh -tf_path /app/TF2 +map $STARTMAP +maxplayers $MAXPLAYERS +sv_region $REGION +sv_setsteamaccount $SRCDS_TOKEN -port $PORT +exec $CFG_FILE +maycyclefile $MAPCYCLE_FILE"]
-=======
 CMD ["/app/classified/srcds.sh -tf_path /app/TF2 +map $STARTMAP +maxplayers $MAXPLAYERS +sv_region $REGION +sv_setsteamaccount $SRCDS_TOKEN -port $PORT +exec $CFG_FILE +exec maycyclefile $MAPCYCLE_FILE"]
->>>>>>> 689cfd2 (fixed mapcycle line)
 ONBUILD USER root
