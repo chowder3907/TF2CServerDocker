@@ -1,3 +1,4 @@
 add volumes for custom maps and potentially sourcemod
 change the run file to autobuild
 make readme
+redo steamcmd and tf2c container so that potentially they share a volume, then steamCMD can be invoked and update directly instead of rebuilding and pulling a new container every time
